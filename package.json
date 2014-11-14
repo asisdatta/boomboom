@@ -1,0 +1,23 @@
+{
+    "name": "AngularDemo",
+    "version": "0.0.1",
+    "description": "Angular Demo",
+    "main": "index.js",
+    "scripts": {
+        "start": "watchify -t brfs index.js -o build/bundle.js -v",
+        "bundle": "browserify -t brfs index.js -o build/bundle.js"
+    },
+    "dependencies": {
+        "angular": "",
+        "angular-bootstrap": "",
+        "angular-ui-router": "",
+        "brfs": "",
+        "jquery": "",
+        "underscore": ""
+    },
+    "devDependencies": {
+        "browserify": "^5.11.2",
+        "watchify": "^1.0.2"
+    },
+    "author": "Innofied"
+}

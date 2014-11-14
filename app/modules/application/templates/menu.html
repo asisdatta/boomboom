@@ -1,0 +1,26 @@
+<!-- ******************* creates header menu ************** -->
+<nav class="navbar navbar-inverse" role="navigation">
+    <div class="navbar-header">
+        <a class="navbar-brand" ui-sref="#">Boom Boom</a>
+    </div>
+    <ul class="nav navbar-nav">
+        <li>
+            <a ui-sref=".home">Home</a>
+        </li>
+        <li>
+            <a ui-sref=".search">Search</a>
+        </li>
+    </ul>
+</nav>
+
+<div class="row">
+    <div ui-view="body" class="col-lg-8"></div>
+    <div class="playlist col-lg-4">
+        <alert type="danger" ng-show="noResult" close="closeAlert()">No Results Found</alert>
+        <div class="row video-container" ng-repeat="video in playlist">
+            <img ng-src="{{video.snippet.thumbnails.high.url}}" alt="" class="thumbnail-img img-responsive col-xs-4 cursor-pointer" ng-click="playVideo(video)">
+            <span class="video-title col-xs-7 cursor-pointer" ng-click="playVideo(video)">{{video.snippet.title}}</span>
+            <span class="video-channel-title col-xs-7">{{video.snippet.channelTitle}}</span>
+        </div>
+    </div>
+</div>

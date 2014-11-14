@@ -1,0 +1,47 @@
+/*lib css*/
+
+@import url("bootstrap.css");
+@import url("font-awesome.min.css");
+.thumbnail-img {
+    margin-bottom: 10px;
+    width: 185px;
+    height: 104px;
+}
+.video-container {
+    height: 100%;
+}
+.category-wrapper {
+    overflow: auto;
+}
+.video-category-container {
+    margin-bottom: 10px;
+}
+.video-title {
+    color: #167ac6;
+    padding: 0 5px;
+    font-weight: bold;
+    display: block;
+    display: -webkit-box;
+    max-width: 100%;
+    margin: 0 auto;
+    font-size: 14px;
+    line-height: 1.3em;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.video-title:hover {
+    text-shadow: 2px 2px 3px #6A9EDA;
+    text-decoration: underline;
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+.m-b-10 {
+    margin-bottom: 10px;
+}
+/* .video-container:hover {
+    -webkit-box-shadow: 3px 3px 10px 2px rgba(0, 0, 0, 1);
+    box-shadow: 3px 3px 10px 2px rgba(0, 0, 0, 1);
+} */
