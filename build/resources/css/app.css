@@ -1,14 +1,11 @@
 /*lib css*/
 
-@import url("bootstrap.css");
+@import url("../lib/bootstrap/css/bootstrap.css");
 @import url("font-awesome.min.css");
 .thumbnail-img {
     margin-bottom: 10px;
     width: 185px;
     height: 104px;
-}
-.video-container {
-    height: 100%;
 }
 .category-wrapper {
     overflow: auto;
@@ -26,13 +23,12 @@
     margin: 0 auto;
     font-size: 14px;
     line-height: 1.3em;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 .video-title:hover {
-    text-shadow: 2px 2px 3px #6A9EDA;
     text-decoration: underline;
 }
 .cursor-pointer {
@@ -41,7 +37,45 @@
 .m-b-10 {
     margin-bottom: 10px;
 }
-/* .video-container:hover {
-    -webkit-box-shadow: 3px 3px 10px 2px rgba(0, 0, 0, 1);
-    box-shadow: 3px 3px 10px 2px rgba(0, 0, 0, 1);
-} */
+.row, .navbar-nav {
+    margin: 0px;
+}
+.playlist-btn {
+    float: right;
+    margin: 8px;
+}
+.notification {
+    position: fixed;
+    top: 60px;
+    left: 100px;
+    z-index: 200;
+    width: 80%;
+}
+/**************** playlist style starts ********************/
+
+.playlist {
+    z-index: 100;
+    position: absolute;
+    right: 0%;
+    background: #000;
+    padding-top: 15px;
+    overflow: scroll;
+    margin-top: -15px;
+}
+.playlist-img {
+    margin-bottom: 10px;
+    width: 110px;
+    height: 70px;
+    padding: 0px;
+}
+.remove-video {
+    color: rgb(236, 168, 22);
+    cursor: pointer;
+}
+.remove-video:hover {
+    -moz-transform: scale(1.5, 1.5);
+    -webkit-transform: scale(1.5, 1.5);
+    -o-transform: scale(1.5, 1.5);
+    -ms-transform: scale(1.5, 1.5);
+    transform: scale(1.5, 1.5);
+}

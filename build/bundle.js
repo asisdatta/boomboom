@@ -140,18 +140,43 @@ module.exports = App;
 },{"../home/home.module":"/var/www/html/angular/boomboom/app/modules/home/home.module.js","../player/player.module":"/var/www/html/angular/boomboom/app/modules/player/player.module.js","../search/search.module":"/var/www/html/angular/boomboom/app/modules/search/search.module.js","./controllers/playlistCtrl":"/var/www/html/angular/boomboom/app/modules/application/controllers/playlistCtrl.js","./router/router":"/var/www/html/angular/boomboom/app/modules/application/router/router.js"}],"/var/www/html/angular/boomboom/app/modules/application/controllers/playlistCtrl.js":[function(require,module,exports){
 'use strict';
 
-module.exports = function($scope, $state) {
+module.exports = function($scope, $state, generateVideoId) {
 
-    if (localStorage.getItem('searchResult')) {
-        $scope.playlist = JSON.parse(localStorage.getItem('searchResult'));
-    } else {
-        $scope.noResult = true;
-    }
+    // shows/hides the playlist
+    $scope.showPlaylist = function() {
+        if ($scope.displayPlaylist) {
+            $scope.displayPlaylist = false;
+        } else {
+            $scope.displayPlaylist = true;
+            $('.playlist').height($(window).height() - 75);
+            if (localStorage.getItem('playlist')) {
+                $scope.playlist = JSON.parse(localStorage.getItem('playlist'));
+            } else {
+                $scope.noResult = true;
+            }
+        }
+    };
     //loads video player and plays video 
     $scope.playVideo = function(video) {
         generateVideoId.setVideo(video);
-        $state.go('app.player');
+
+        $state.go('app.player', {}, {
+            reload: true
+        });
+
     };
+    //close the alert and playlist when there are no videos in  the list
+    $scope.closeAlert = function(index) {
+        $scope.displayPlaylist = false;
+    };
+    //remove an video from the playlist
+    $scope.removeVideo = function(index) {
+        $scope.playlist.splice(index, 1);
+        localStorage.setItem('playlist', JSON.stringify($scope.playlist));
+        if ($scope.playlist.length === 0) {
+            $scope.noResult = true;
+        }
+    }
 }
 
 },{}],"/var/www/html/angular/boomboom/app/modules/application/router/router.js":[function(require,module,exports){
@@ -163,7 +188,7 @@ module.exports = function($stateProvider, $locationProvider, $urlRouterProvider)
     window.console.log('Starting app');
     $stateProvider
         .state('app', {
-            template: Buffer("PCEtLSAqKioqKioqKioqKioqKioqKioqIGNyZWF0ZXMgaGVhZGVyIG1lbnUgKioqKioqKioqKioqKiogLS0+CjxuYXYgY2xhc3M9Im5hdmJhciBuYXZiYXItaW52ZXJzZSIgcm9sZT0ibmF2aWdhdGlvbiI+CiAgICA8ZGl2IGNsYXNzPSJuYXZiYXItaGVhZGVyIj4KICAgICAgICA8YSBjbGFzcz0ibmF2YmFyLWJyYW5kIiB1aS1zcmVmPSIjIj5Cb29tIEJvb208L2E+CiAgICA8L2Rpdj4KICAgIDx1bCBjbGFzcz0ibmF2IG5hdmJhci1uYXYiPgogICAgICAgIDxsaT4KICAgICAgICAgICAgPGEgdWktc3JlZj0iLmhvbWUiPkhvbWU8L2E+CiAgICAgICAgPC9saT4KICAgICAgICA8bGk+CiAgICAgICAgICAgIDxhIHVpLXNyZWY9Ii5zZWFyY2giPlNlYXJjaDwvYT4KICAgICAgICA8L2xpPgogICAgPC91bD4KPC9uYXY+Cgo8ZGl2IGNsYXNzPSJyb3ciPgogICAgPGRpdiB1aS12aWV3PSJib2R5IiBjbGFzcz0iY29sLWxnLTgiPjwvZGl2PgogICAgPGRpdiBjbGFzcz0icGxheWxpc3QgY29sLWxnLTQiPgogICAgICAgIDxhbGVydCB0eXBlPSJkYW5nZXIiIG5nLXNob3c9Im5vUmVzdWx0IiBjbG9zZT0iY2xvc2VBbGVydCgpIj5ObyBSZXN1bHRzIEZvdW5kPC9hbGVydD4KICAgICAgICA8ZGl2IGNsYXNzPSJyb3cgdmlkZW8tY29udGFpbmVyIiBuZy1yZXBlYXQ9InZpZGVvIGluIHBsYXlsaXN0Ij4KICAgICAgICAgICAgPGltZyBuZy1zcmM9Int7dmlkZW8uc25pcHBldC50aHVtYm5haWxzLmhpZ2gudXJsfX0iIGFsdD0iIiBjbGFzcz0idGh1bWJuYWlsLWltZyBpbWctcmVzcG9uc2l2ZSBjb2wteHMtNCBjdXJzb3ItcG9pbnRlciIgbmctY2xpY2s9InBsYXlWaWRlbyh2aWRlbykiPgogICAgICAgICAgICA8c3BhbiBjbGFzcz0idmlkZW8tdGl0bGUgY29sLXhzLTcgY3Vyc29yLXBvaW50ZXIiIG5nLWNsaWNrPSJwbGF5VmlkZW8odmlkZW8pIj57e3ZpZGVvLnNuaXBwZXQudGl0bGV9fTwvc3Bhbj4KICAgICAgICAgICAgPHNwYW4gY2xhc3M9InZpZGVvLWNoYW5uZWwtdGl0bGUgY29sLXhzLTciPnt7dmlkZW8uc25pcHBldC5jaGFubmVsVGl0bGV9fTwvc3Bhbj4KICAgICAgICA8L2Rpdj4KICAgIDwvZGl2Pgo8L2Rpdj4K","base64"),
+            template: Buffer("PCEtLSAqKioqKioqKioqKioqKioqKioqIGNyZWF0ZXMgaGVhZGVyIG1lbnUgKioqKioqKioqKioqKiogLS0+CjxuYXYgY2xhc3M9Im5hdmJhciBuYXZiYXItaW52ZXJzZSBoZWFkZXIiIHJvbGU9Im5hdmlnYXRpb24iPgogICAgPGRpdiBjbGFzcz0ibmF2YmFyLWhlYWRlciI+CiAgICAgICAgPGEgY2xhc3M9Im5hdmJhci1icmFuZCIgdWktc3JlZj0iIyI+Qm9vbSBCb29tPC9hPgogICAgPC9kaXY+CiAgICA8dWwgY2xhc3M9Im5hdiBuYXZiYXItbmF2Ij4KICAgICAgICA8bGk+CiAgICAgICAgICAgIDxhIHVpLXNyZWY9Ii5ob21lIj5Ib21lPC9hPgogICAgICAgIDwvbGk+CiAgICAgICAgPGxpPgogICAgICAgICAgICA8YSB1aS1zcmVmPSIuc2VhcmNoIj5TZWFyY2g8L2E+CiAgICAgICAgPC9saT4KICAgIDwvdWw+CiAgICA8YnV0dG9uIGNsYXNzPSJidG4gYnRuLWRlZmF1bHQgcGxheWxpc3QtYnRuIiBuZy1jbGljaz0ic2hvd1BsYXlsaXN0KCkiPgogICAgICAgIDxzcGFuIGNsYXNzPSJnbHlwaGljb24gZ2x5cGhpY29uLWxpc3QiIGFyaWEtaGlkZGVuPSJ0cnVlIj48L3NwYW4+CiAgICAgICAgUGxheWxpc3QKICAgIDwvYnV0dG9uPgo8L25hdj4KCjxkaXYgY2xhc3M9InJvdyI+CiAgICA8ZGl2IHVpLXZpZXc9ImJvZHkiIGNsYXNzPSJjb2wteHMtMTIiPjwvZGl2PgogICAgPGRpdiBjbGFzcz0icGxheWxpc3QgY29sLWxnLTMgY29sLXNtLTUgY29sLXhzLTciIG5nLXNob3c9ImRpc3BsYXlQbGF5bGlzdCI+CiAgICAgICAgPGFsZXJ0IHR5cGU9ImRhbmdlciIgbmctc2hvdz0ibm9SZXN1bHQiIGNsb3NlPSJjbG9zZUFsZXJ0KCkiPgogICAgICAgICAgICBObyB2aWRlb3MgdG8gZGlzcGxheQogICAgICAgICAgICA8c3BhbiBjbGFzcz0iZ2x5cGhpY29uIGdseXBoaWNvbi1leGNsYW1hdGlvbi1zaWduIiBhcmlhLWhpZGRlbj0idHJ1ZSI+PC9zcGFuPgogICAgICAgIDwvYWxlcnQ+CiAgICAgICAgPGRpdiBjbGFzcz0icm93IHZpZGVvLWNvbnRhaW5lciIgbmctcmVwZWF0PSJ2aWRlbyBpbiBwbGF5bGlzdCB0cmFjayBieSAkaW5kZXgiPgogICAgICAgICAgICA8aW1nIG5nLXNyYz0ie3t2aWRlby5zbmlwcGV0LnRodW1ibmFpbHMuaGlnaC51cmx9fSIgYWx0PSIiIGNsYXNzPSJwbGF5bGlzdC1pbWcgaW1nLXJlc3BvbnNpdmUgY29sLXhzLTQgY3Vyc29yLXBvaW50ZXIiIG5nLWNsaWNrPSJwbGF5VmlkZW8odmlkZW8pIj4KICAgICAgICAgICAgPHNwYW4gY2xhc3M9InZpZGVvLXRpdGxlIGNvbC14cy02IGN1cnNvci1wb2ludGVyIiBuZy1jbGljaz0icGxheVZpZGVvKHZpZGVvKSI+e3t2aWRlby5zbmlwcGV0LnRpdGxlfX08L3NwYW4+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJnbHlwaGljb24gZ2x5cGhpY29uLXRyYXNoIHJlbW92ZS12aWRlbyIgYXJpYS1oaWRkZW49InRydWUiIG5nLWNsaWNrPSJyZW1vdmVWaWRlbygkaW5kZXgpIj48L3NwYW4+CiAgICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KPC9kaXY+Cg==","base64"),
             controller: 'playlistCtrl'
         });
 
@@ -202,7 +227,6 @@ var config = require('../../../config'),
 
 module.exports = function($scope, $http, $state, generateVideoId) {
     $scope.categoryList = config.categoryList;
-
     _.each($scope.categoryList, function(category) {
         $http({ //get image urls from remote server
             url: api.videos,
@@ -221,11 +245,43 @@ module.exports = function($scope, $http, $state, generateVideoId) {
             //while any error occured
         });
     });
-
+    //adds to playlist in local storage 
+    $scope.addToPlaylist = function(video) {
+        var playlist = [],
+            flag = true;
+        if (localStorage.getItem('playlist')) {
+            playlist = JSON.parse(localStorage.getItem('playlist'));
+            playlist.forEach(function(item) {
+                var videoId = item.id.videoId || item.id;
+                if (videoId === video.id) {
+                    flag = false;
+                }
+            });
+            if (flag) {
+                playlist.push(video);
+                localStorage.setItem('playlist', JSON.stringify(playlist));
+                $scope.added = true;
+                setTimeout(function() {
+                    $scope.added = false;
+                    $scope.$apply();
+                }, 2000);
+            } else {
+                $scope.alreadyExists = true;
+                setTimeout(function() {
+                    $scope.alreadyExists = false;
+                    $scope.$apply();
+                }, 2000);
+            }
+        }
+    };
     //loads video player and plays video 
     $scope.playVideo = function(video) {
         generateVideoId.setVideo(video);
         $state.go('app.player');
+    };
+    //close the alerty 
+    $scope.closeAlert = function() {
+        $scope.added = false;
     };
 }
 
@@ -266,7 +322,7 @@ module.exports = function($stateProvider, $locationProvider, $urlRouterProvider)
             url: '/home',
             views: {
                 'body': {
-                    template: Buffer("PGgxPkhvbWUgUGFnZTwvaDE+Cgo8ZGl2IG5nLXJlcGVhdD0iY2F0ZWdvcnkgaW4gY2F0ZWdvcnlMaXN0IiBjbGFzcz0iY2F0ZWdvcnktd3JhcHBlciI+CiAgICA8aDM+e3tjYXRlZ29yeS5sYWJlbH19PC9oMz4KICAgIDxkaXYgY2xhc3M9InZpZGVvLWNhdGVnb3J5LWNvbnRhaW5lciBjb2wtbGctNCBjb2wtc20tNiBjb2wteHMtMTIiIG5nLXJlcGVhdD0idmlkZW8gaW4gY2F0ZWdvcnkudmlkZW9MaXN0Ij4KICAgICAgICA8aW1nIG5nLXNyYz0ie3t2aWRlby5zbmlwcGV0LnRodW1ibmFpbHMuaGlnaC51cmx9fSIgYWx0PSIiIGNsYXNzPSJpbWctcmVzcG9uc2l2ZSBjb2wteHMtNiBjdXJzb3ItcG9pbnRlciIgbmctY2xpY2s9InBsYXlWaWRlbyh2aWRlbykiPgogICAgICAgIDxzcGFuIGNsYXNzPSJ2aWRlby10aXRsZSBjb2wteHMtNiB2aWRlby10aXRsZSBjdXJzb3ItcG9pbnRlciIgbmctY2xpY2s9InBsYXlWaWRlbyh2aWRlbykiPnt7dmlkZW8uc25pcHBldC50aXRsZX19PC9zcGFuPgogICAgICAgIDxzcGFuIGNsYXNzPSIgdmlkZW8tY2hhbm5lbC10aXRsZSBjb2wteHMtNiI+e3t2aWRlby5jb250ZW50RGV0YWlscy5kdXJhdGlvbiB8IGR1cmF0aW9ufX08L3NwYW4+CiAgICA8L2Rpdj4KPC9kaXY+Cg==","base64"),
+                    template: Buffer("PGFsZXJ0IHR5cGU9InN1Y2Nlc3MiIG5nLXNob3c9ImFkZGVkIiBjbG9zZT0iY2xvc2VBbGVydCgpIiBjbGFzcz0ibm90aWZpY2F0aW9uIj4KICAgIFN1Y2Nlc3NmdWxseSBhZGRlZCB0byBwbGF5bGlzdC4KICAgIDxzcGFuIGNsYXNzPSJnbHlwaGljb24gZ2x5cGhpY29uLW9rIiBhcmlhLWhpZGRlbj0idHJ1ZSI+PC9zcGFuPgo8L2FsZXJ0Pgo8YWxlcnQgdHlwZT0iZGFuZ2VyIiBuZy1zaG93PSJhbHJlYWR5RXhpc3RzIiBjbG9zZT0iY2xvc2VBbGVydCgpIiBjbGFzcz0ibm90aWZpY2F0aW9uIj4KICAgIEFscmVhZHkgZXhpc3RzIGluIHBsYXlsaXN0LgogICAgPHNwYW4gY2xhc3M9ImdseXBoaWNvbiBnbHlwaGljb24tZXhjbGFtYXRpb24tc2lnbiIgYXJpYS1oaWRkZW49InRydWUiPjwvc3Bhbj4KPC9hbGVydD4KPGRpdiBuZy1yZXBlYXQ9ImNhdGVnb3J5IGluIGNhdGVnb3J5TGlzdCIgY2xhc3M9ImNhdGVnb3J5LXdyYXBwZXIiPgogICAgPGgzPnt7Y2F0ZWdvcnkubGFiZWx9fTwvaDM+CiAgICA8ZGl2IGNsYXNzPSJ2aWRlby1jYXRlZ29yeS1jb250YWluZXIgY29sLWxnLTQgY29sLXNtLTYgY29sLXhzLTEyIiBuZy1yZXBlYXQ9InZpZGVvIGluIGNhdGVnb3J5LnZpZGVvTGlzdCI+CiAgICAgICAgPGltZyBuZy1zcmM9Int7dmlkZW8uc25pcHBldC50aHVtYm5haWxzLmhpZ2gudXJsfX0iIGFsdD0iIiBjbGFzcz0iaW1nLXJlc3BvbnNpdmUgY29sLXhzLTYgY3Vyc29yLXBvaW50ZXIiIG5nLWNsaWNrPSJwbGF5VmlkZW8odmlkZW8pIj4KICAgICAgICA8c3BhbiBjbGFzcz0idmlkZW8tdGl0bGUgY29sLXhzLTYgdmlkZW8tdGl0bGUgY3Vyc29yLXBvaW50ZXIiIG5nLWNsaWNrPSJwbGF5VmlkZW8odmlkZW8pIj57e3ZpZGVvLnNuaXBwZXQudGl0bGV9fTwvc3Bhbj4KICAgICAgICA8c3BhbiBjbGFzcz0iIHZpZGVvLWNoYW5uZWwtdGl0bGUgY29sLXhzLTYiPnt7dmlkZW8uY29udGVudERldGFpbHMuZHVyYXRpb24gfCBkdXJhdGlvbn19PC9zcGFuPgogICAgICAgIDxidXR0b24gY2xhc3M9ImJ0biBidG4tZGVmYXVsdCIgbmctY2xpY2s9ImFkZFRvUGxheWxpc3QodmlkZW8pIj4KICAgICAgICAgICAgQWRkIHRvIFBsYXlsaXN0CiAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJnbHlwaGljb24gZ2x5cGhpY29uLW9rIGFkZC10by1wbGF5bGlzdC1pY29uIiBhcmlhLWhpZGRlbj0idHJ1ZSI+PC9zcGFuPgogICAgICAgIDwvYnV0dG9uPgogICAgPC9kaXY+CjwvZGl2Pgo=","base64"),
                     controller: 'homeCtrl'
                 }
             }
@@ -287,7 +343,6 @@ module.exports = function($scope, $rootScope, $http, generateVideoId) {
         video = generateVideoId.getVideo(),
         videoId = video.id.videoId || video.id;
     $scope.title = video.snippet.title;
-
     (function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
             height: '390',
@@ -387,6 +442,7 @@ module.exports = function($scope, $rootScope, $http, $state, generateVideoId) {
         generateVideoId.setVideo(video);
         $state.go('app.player');
     };
+    //close the alert of no result found
     $scope.closeAlert = function(index) {
         $scope.noResult = false;
     };
@@ -394,7 +450,36 @@ module.exports = function($scope, $rootScope, $http, $state, generateVideoId) {
         $scope.videoList = JSON.parse(localStorage.getItem('searchResult'));
     } else {
         $scope.findVideoes();
-    }
+    };
+    //adds to playlist in local storage 
+    $scope.addToPlaylist = function(video) {
+        var playlist = [],
+            flag = true;
+        if (localStorage.getItem('playlist')) {
+            playlist = JSON.parse(localStorage.getItem('playlist'));
+            playlist.forEach(function(item) {
+                var videoId = item.id.videoId || item.id;
+                if (videoId === video.id.videoId) {
+                    flag = false;
+                }
+            });
+            if (flag) {
+                playlist.push(video);
+                localStorage.setItem('playlist', JSON.stringify(playlist));
+                $scope.added = true;
+                setTimeout(function() {
+                    $scope.added = false;
+                    $scope.$apply();
+                }, 2000);
+            } else {
+                $scope.alreadyExists = true;
+                setTimeout(function() {
+                    $scope.alreadyExists = false;
+                    $scope.$apply();
+                }, 2000);
+            }
+        }
+    };
 };
 
 },{"../../../config":"/var/www/html/angular/boomboom/app/config/index.js","../../../util/api":"/var/www/html/angular/boomboom/app/util/api.js"}],"/var/www/html/angular/boomboom/app/modules/search/router/router.js":[function(require,module,exports){
@@ -407,7 +492,7 @@ module.exports = function($stateProvider, $locationProvider, $urlRouterProvider)
             url: '/search',
             views: {
                 'body': {
-                    template: Buffer("PGRpdj4KICAgIDxmb3JtIHJvbGU9InNlYXJjaCIgY2xhc3M9Im0tYi0xMCI+CiAgICAgICAgPGRpdiBjbGFzcz0iaW5wdXQtZ3JvdXAiPgogICAgICAgICAgICA8aW5wdXQgdHlwZT0idGV4dCIgY2xhc3M9ImZvcm0tY29udHJvbCIgbmctbW9kZWw9InNlYXJjaEtleSIgZW50ZXItZXZlbnQ9ImZpbmRWaWRlb2VzKCkiPgogICAgICAgICAgICA8c3BhbiBjbGFzcz0iaW5wdXQtZ3JvdXAtYnRuIj4KICAgICAgICAgICAgICAgIDxidXR0b24gY2xhc3M9ImJ0biBidG4tZGVmYXVsdCIgdHlwZT0iYnV0dG9uIiBuZy1jbGljaz0iZmluZFZpZGVvZXMoKSI+U2VhcmNoPC9idXR0b24+CiAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICA8L2Rpdj4KICAgIDwvZm9ybT4KCiAgICA8ZGl2PgogICAgICAgIDxhbGVydCB0eXBlPSJkYW5nZXIiIG5nLXNob3c9Im5vUmVzdWx0IiBjbG9zZT0iY2xvc2VBbGVydCgpIj5ObyBSZXN1bHRzIEZvdW5kPC9hbGVydD4KICAgICAgICA8ZGl2IGNsYXNzPSJyb3cgdmlkZW8tY29udGFpbmVyIiBuZy1yZXBlYXQ9InZpZGVvIGluIHZpZGVvTGlzdCI+CiAgICAgICAgICAgIDxpbWcgbmctc3JjPSJ7e3ZpZGVvLnNuaXBwZXQudGh1bWJuYWlscy5oaWdoLnVybH19IiBhbHQ9IiIgY2xhc3M9InRodW1ibmFpbC1pbWcgaW1nLXJlc3BvbnNpdmUgY29sLXhzLTQgY3Vyc29yLXBvaW50ZXIiIG5nLWNsaWNrPSJwbGF5VmlkZW8odmlkZW8pIj4KICAgICAgICAgICAgPHNwYW4gY2xhc3M9InZpZGVvLXRpdGxlIGNvbC14cy03IGN1cnNvci1wb2ludGVyIiBuZy1jbGljaz0icGxheVZpZGVvKHZpZGVvKSI+e3t2aWRlby5zbmlwcGV0LnRpdGxlfX08L3NwYW4+CiAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ2aWRlby1jaGFubmVsLXRpdGxlIGNvbC14cy03Ij57e3ZpZGVvLnNuaXBwZXQuY2hhbm5lbFRpdGxlfX08L3NwYW4+CiAgICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KPC9kaXY+Cg==","base64"),
+                    template: Buffer("PGRpdj4KICAgIDxmb3JtIHJvbGU9InNlYXJjaCIgY2xhc3M9Im0tYi0xMCI+CiAgICAgICAgPGRpdiBjbGFzcz0iaW5wdXQtZ3JvdXAiPgogICAgICAgICAgICA8aW5wdXQgdHlwZT0idGV4dCIgY2xhc3M9ImZvcm0tY29udHJvbCIgbmctbW9kZWw9InNlYXJjaEtleSIgZW50ZXItZXZlbnQ9ImZpbmRWaWRlb2VzKCkiPgogICAgICAgICAgICA8c3BhbiBjbGFzcz0iaW5wdXQtZ3JvdXAtYnRuIj4KICAgICAgICAgICAgICAgIDxidXR0b24gY2xhc3M9ImJ0biBidG4tZGVmYXVsdCIgdHlwZT0iYnV0dG9uIiBuZy1jbGljaz0iZmluZFZpZGVvZXMoKSI+U2VhcmNoPC9idXR0b24+CiAgICAgICAgICAgIDwvc3Bhbj4KICAgICAgICA8L2Rpdj4KICAgIDwvZm9ybT4KCiAgICA8ZGl2PgogICAgICAgIDxhbGVydCB0eXBlPSJkYW5nZXIiIG5nLXNob3c9Im5vUmVzdWx0IiBjbG9zZT0iY2xvc2VBbGVydCgpIj4KICAgICAgICAgICAgTm8gUmVzdWx0cyBGb3VuZAogICAgICAgICAgICA8c3BhbiBjbGFzcz0iZ2x5cGhpY29uIGdseXBoaWNvbi1leGNsYW1hdGlvbi1zaWduIiBhcmlhLWhpZGRlbj0idHJ1ZSI+PC9zcGFuPgogICAgICAgIDwvYWxlcnQ+CiAgICAgICAgPGRpdiBjbGFzcz0icm93IHZpZGVvLWNvbnRhaW5lciBtLWItMTAiIG5nLXJlcGVhdD0idmlkZW8gaW4gdmlkZW9MaXN0Ij4KICAgICAgICAgICAgPGltZyBuZy1zcmM9Int7dmlkZW8uc25pcHBldC50aHVtYm5haWxzLmhpZ2gudXJsfX0iIGFsdD0iIiBjbGFzcz0idGh1bWJuYWlsLWltZyBpbWctcmVzcG9uc2l2ZSBjb2wteHMtNCBjdXJzb3ItcG9pbnRlciIgbmctY2xpY2s9InBsYXlWaWRlbyh2aWRlbykiPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJjb2wtbGctNyI+CiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0idmlkZW8tdGl0bGUgY29sLWxnLTcgY29sLXNtLTcgY29sLXhzLTcgY3Vyc29yLXBvaW50ZXIiIG5nLWNsaWNrPSJwbGF5VmlkZW8odmlkZW8pIj57e3ZpZGVvLnNuaXBwZXQudGl0bGV9fTwvc3Bhbj4KICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJ2aWRlby1jaGFubmVsLXRpdGxlIGNvbC1sZy03IGNvbC1zbS03IGNvbC14cy03Ij57e3ZpZGVvLnNuaXBwZXQuY2hhbm5lbFRpdGxlfX08L3NwYW4+CiAgICAgICAgICAgICAgICA8YnV0dG9uIGNsYXNzPSJidG4gYnRuLWRlZmF1bHQiIG5nLWNsaWNrPSJhZGRUb1BsYXlsaXN0KHZpZGVvKSI+CiAgICAgICAgICAgICAgICAgICAgQWRkIHRvIFBsYXlsaXN0CiAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9ImdseXBoaWNvbiBnbHlwaGljb24tb2sgYWRkLXRvLXBsYXlsaXN0LWljb24iIGFyaWEtaGlkZGVuPSJ0cnVlIj48L3NwYW4+CiAgICAgICAgICAgICAgICA8L2J1dHRvbj4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KICAgIDxhbGVydCB0eXBlPSJzdWNjZXNzIiBuZy1zaG93PSJhZGRlZCIgY2xvc2U9ImNsb3NlQWxlcnQoKSIgY2xhc3M9Im5vdGlmaWNhdGlvbiI+CiAgICAgICAgU3VjY2Vzc2Z1bGx5IGFkZGVkIHRvIHBsYXlsaXN0LgogICAgICAgIDxzcGFuIGNsYXNzPSJnbHlwaGljb24gZ2x5cGhpY29uLW9rIiBhcmlhLWhpZGRlbj0idHJ1ZSI+PC9zcGFuPgogICAgPC9hbGVydD4KICAgIDxhbGVydCB0eXBlPSJkYW5nZXIiIG5nLXNob3c9ImFscmVhZHlFeGlzdHMiIGNsb3NlPSJjbG9zZUFsZXJ0KCkiIGNsYXNzPSJub3RpZmljYXRpb24iPgogICAgICAgIEFscmVhZHkgZXhpc3RzIGluIHBsYXlsaXN0LgogICAgICAgIDxzcGFuIGNsYXNzPSJnbHlwaGljb24gZ2x5cGhpY29uLWV4Y2xhbWF0aW9uLXNpZ24iIGFyaWEtaGlkZGVuPSJ0cnVlIj48L3NwYW4+CiAgICA8L2FsZXJ0Pgo8L2Rpdj4K","base64"),
                     controller: 'searchCtrl'
                 }
             }

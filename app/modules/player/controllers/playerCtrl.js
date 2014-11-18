@@ -10,7 +10,6 @@ module.exports = function($scope, $rootScope, $http, generateVideoId) {
         video = generateVideoId.getVideo(),
         videoId = video.id.videoId || video.id;
     $scope.title = video.snippet.title;
-
     (function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
             height: '390',

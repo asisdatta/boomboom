@@ -1,5 +1,5 @@
 <!-- ******************* creates header menu ************** -->
-<nav class="navbar navbar-inverse" role="navigation">
+<nav class="navbar navbar-inverse header" role="navigation">
     <div class="navbar-header">
         <a class="navbar-brand" ui-sref="#">Boom Boom</a>
     </div>
@@ -11,16 +11,23 @@
             <a ui-sref=".search">Search</a>
         </li>
     </ul>
+    <button class="btn btn-default playlist-btn" ng-click="showPlaylist()">
+        <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+        Playlist
+    </button>
 </nav>
 
 <div class="row">
-    <div ui-view="body" class="col-lg-8"></div>
-    <div class="playlist col-lg-4">
-        <alert type="danger" ng-show="noResult" close="closeAlert()">No Results Found</alert>
-        <div class="row video-container" ng-repeat="video in playlist">
-            <img ng-src="{{video.snippet.thumbnails.high.url}}" alt="" class="thumbnail-img img-responsive col-xs-4 cursor-pointer" ng-click="playVideo(video)">
-            <span class="video-title col-xs-7 cursor-pointer" ng-click="playVideo(video)">{{video.snippet.title}}</span>
-            <span class="video-channel-title col-xs-7">{{video.snippet.channelTitle}}</span>
+    <div ui-view="body" class="col-xs-12"></div>
+    <div class="playlist col-lg-3 col-sm-5 col-xs-7" ng-show="displayPlaylist">
+        <alert type="danger" ng-show="noResult" close="closeAlert()">
+            No videos to display
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        </alert>
+        <div class="row video-container" ng-repeat="video in playlist track by $index">
+            <img ng-src="{{video.snippet.thumbnails.high.url}}" alt="" class="playlist-img img-responsive col-xs-4 cursor-pointer" ng-click="playVideo(video)">
+            <span class="video-title col-xs-6 cursor-pointer" ng-click="playVideo(video)">{{video.snippet.title}}</span>
+            <span class="glyphicon glyphicon-trash remove-video" aria-hidden="true" ng-click="removeVideo($index)"></span>
         </div>
     </div>
 </div>

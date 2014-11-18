@@ -1,10 +1,20 @@
-<h1>Home Page</h1>
-
+<alert type="success" ng-show="added" close="closeAlert()" class="notification">
+    Successfully added to playlist.
+    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+</alert>
+<alert type="danger" ng-show="alreadyExists" close="closeAlert()" class="notification">
+    Already exists in playlist.
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+</alert>
 <div ng-repeat="category in categoryList" class="category-wrapper">
     <h3>{{category.label}}</h3>
     <div class="video-category-container col-lg-4 col-sm-6 col-xs-12" ng-repeat="video in category.videoList">
         <img ng-src="{{video.snippet.thumbnails.high.url}}" alt="" class="img-responsive col-xs-6 cursor-pointer" ng-click="playVideo(video)">
         <span class="video-title col-xs-6 video-title cursor-pointer" ng-click="playVideo(video)">{{video.snippet.title}}</span>
         <span class=" video-channel-title col-xs-6">{{video.contentDetails.duration | duration}}</span>
+        <button class="btn btn-default" ng-click="addToPlaylist(video)">
+            Add to Playlist
+            <span class="glyphicon glyphicon-ok add-to-playlist-icon" aria-hidden="true"></span>
+        </button>
     </div>
 </div>

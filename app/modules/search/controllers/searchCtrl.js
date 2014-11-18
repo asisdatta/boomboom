@@ -36,6 +36,7 @@ module.exports = function($scope, $rootScope, $http, $state, generateVideoId) {
         generateVideoId.setVideo(video);
         $state.go('app.player');
     };
+    //close the alert of no result found
     $scope.closeAlert = function(index) {
         $scope.noResult = false;
     };
@@ -43,5 +44,34 @@ module.exports = function($scope, $rootScope, $http, $state, generateVideoId) {
         $scope.videoList = JSON.parse(localStorage.getItem('searchResult'));
     } else {
         $scope.findVideoes();
-    }
+    };
+    //adds to playlist in local storage 
+    $scope.addToPlaylist = function(video) {
+        var playlist = [],
+            flag = true;
+        if (localStorage.getItem('playlist')) {
+            playlist = JSON.parse(localStorage.getItem('playlist'));
+            playlist.forEach(function(item) {
+                var videoId = item.id.videoId || item.id;
+                if (videoId === video.id.videoId) {
+                    flag = false;
+                }
+            });
+            if (flag) {
+                playlist.push(video);
+                localStorage.setItem('playlist', JSON.stringify(playlist));
+                $scope.added = true;
+                setTimeout(function() {
+                    $scope.added = false;
+                    $scope.$apply();
+                }, 2000);
+            } else {
+                $scope.alreadyExists = true;
+                setTimeout(function() {
+                    $scope.alreadyExists = false;
+                    $scope.$apply();
+                }, 2000);
+            }
+        }
+    };
 };
